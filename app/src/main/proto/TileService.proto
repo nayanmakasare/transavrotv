@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package TileService;
+
+service TileService{
+    rpc GetMovieTiles(RowId) returns (stream MovieTile){}
+}
+
+message RowId{
+    string rowId = 1;
+    bool getFullData = 2;
+}
+
+message RowContent{
+    repeated MovieTile movieTiles = 1;
+}
+
+message MovieTile {
+    string ref_id = 1;
+    POSTERS posters = 2;
+    CONTENT content = 3;
+    METADATA metadata = 4;
+}
+
+message POSTERS {
+    repeated string landscape = 1;
+    repeated string portrait = 2;
+}
+
+message METADATA {
+    string title = 1;
+}
+
+message CONTENT {
+    bool detailPage = 1;
+    string package = 2;
+    repeated string target = 3;
+    string type = 4;
+    string playstoreUrl = 5;
+    bool useAlternate = 6;
+    string alternateUrl = 7;
+}
+

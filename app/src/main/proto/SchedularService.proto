@@ -1,0 +1,187 @@
+syntax = "proto3";
+
+package SchedularService;
+
+import "google/protobuf/timestamp.proto";
+
+service SchedularService {
+    rpc MakeSchedule (CloudwalkerSchedule) returns (ServiceResponse);
+    rpc GetSchedule (RequestSchedule) returns (UserScheduleResponse);
+
+    // utilites to make Page or schedules
+    rpc GetDropDownInfo(Filter) returns (stream FilterResult) {};
+    rpc GetRowTiles(RowSpecs) returns (stream MovieTile) {};
+
+    rpc GetVendorList(VendorListRequest) returns (stream FilterResult){};
+    rpc GetBrandList(RequestedVendors) returns (stream FilterResult){};
+
+    // rpc calls     to make pages/Templates
+    rpc CreatePage(Page) returns (CreatePageResult) {};
+    rpc GetPage(PageId) returns (Page) {}
+    rpc GetAllPages(RequestAllPages) returns (stream Page) {};
+    rpc UpdatePage(Page) returns (UpdatePageResult);
+    rpc DeletePage(PageId) returns (DeletePageResult) {};
+}
+
+message RequestedVendors{
+    repeated string vendor = 1;
+}
+
+message VendorListResponse{
+    repeated string vendor = 1;
+}
+
+message BrandListResponse{
+    repeated string brand = 1;
+}
+
+message VendorListRequest{
+    string filterKey = 1;
+}
+
+message DeletePageResult{
+    bool isDeleted = 1;
+}
+
+message UpdatePageResult{
+    bool isUpdated = 1;
+}
+
+
+message PageId{
+    string pageId = 1;
+}
+
+message Filter{
+    string filterKey = 1;
+    string filterValue = 2;
+}
+
+message RequestAllPages{
+}
+
+message Page{
+    string pageId = 1;
+    string pageName = 2;
+    int32 pageIndex = 3;
+    repeated Row row = 4;
+    repeated Carousel carousel = 5;
+    google.protobuf.Timestamp createdAt = 6;
+    google.protobuf.Timestamp updatedAt = 7;
+}
+
+message Carousel {
+    string target = 1;
+    string source = 2;
+    string imageUrl = 3;
+}
+
+message RowSpecs{
+    map<string, RowFilterValue> rowFilters = 1;
+}
+
+enum RowType{
+    Editorial = 0;
+    Recommendation  = 1 ;
+    Dynamic  = 2;
+}
+
+enum TileType {
+    ContentTile = 0;
+    VideoTile = 1;
+    FeatureTile = 2;
+    AdvertiseTile = 3;
+    CarouselTile = 4;
+}
+
+message RowFilterValue {
+    repeated string values = 1;
+}
+
+message Row{
+    string rowName = 1;
+    map<string, RowFilterValue> rowFilters = 2;
+    int32 rowIndex = 3;
+    RowType rowType = 4;
+    repeated string rowTiles = 5;
+    string rowLayout = 6;
+}
+
+message CreatePageResult{
+    bool isSuccessful = 1 ;
+}
+
+message FilterResult{
+    string result = 1;
+}
+
+message ApplyRequest {
+    string Vendor = 1;
+    string Brand = 2 ;
+}
+
+message UserScheduleResponse {
+    repeated LauncherPage LauncherPage = 1;
+}
+
+message LauncherPage {
+    string PageName = 1;
+    repeated Carousel Carousel = 2;
+    repeated LauncherRows LauncherRows = 3;
+    int32 PageIndex = 4;
+}
+
+message LauncherRows {
+    string RowName = 1;
+    string RowId = 2;
+    int32 RowIndex = 3;
+}
+
+message ServiceResponse {
+    bool IsSuccessfull = 1;
+    string message = 2;
+}
+
+message RequestSchedule {
+    string Vendor = 1;
+    string Brand = 2 ;
+}
+
+message CloudwalkerSchedule {
+    string vendor = 1;
+    string brand = 2;
+    string startTime = 3;
+    string endTime = 4;
+    repeated Page pages = 5;
+    google.protobuf.Timestamp createdAt = 6;
+    google.protobuf.Timestamp updatedAt = 7;
+}
+
+
+message MovieTile {
+    string ref_id = 1;
+    POSTERS posters = 2;
+    CONTENT content = 3;
+    METADATA metadata = 4;
+    TileType tileType = 5;
+}
+
+message POSTERS {
+    repeated string landscape = 1;
+    repeated string portrait = 2;
+    repeated string banner = 3;
+}
+
+message METADATA {
+    string title = 1;
+}
+
+message CONTENT {
+    bool detailPage = 1;
+    string package = 2;
+    repeated string target = 3;
+    string type = 4;
+    string playstoreUrl = 5;
+    bool useAlternate = 6;
+    string alternateUrl = 7;
+}

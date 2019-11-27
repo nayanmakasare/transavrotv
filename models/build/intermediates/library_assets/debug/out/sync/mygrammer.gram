@@ -1,0 +1,5 @@
+#JSGF V1.0;
+
+grammar mygrammer;
+
+public <item> = Source | Apps | Movies | ShortFilms;
